@@ -1,0 +1,11 @@
+.idea
+
+data
+
+docker/php/bash/.bash_history
+docker/php/Dockerfile
+
+/.env
+/var/
+/vendor/
+/phpunit.xml

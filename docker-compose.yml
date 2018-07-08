@@ -1,0 +1,50 @@
+version: '2.1'
+
+services:
+  postgres:
+    image: postgres:10.4
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_PASSWORD: 1234567890
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+
+  php:
+    build: ./docker/php
+    expose:
+      - 9000
+    volumes:
+      - ./:/var/www/chp
+      - /etc/localtime:/etc/localtime:ro
+      - ./docker/php/boot:/etc/my_init.d
+      - ./docker/php/mods/xdebug.ini:/etc/php/7.2/mods-available/xdebug.ini:ro
+      - ./docker/php/pool.d/symfony.pool.conf:/etc/php/7.2/fpm/pool.d/symfony.pool.conf
+      - ./docker/php/bash/.bashrc:/home/www-data/.bashrc:ro
+      - ./docker/php/bash/.bash_history:/home/www-data/.bash_history
+      - ./data/phpsession:/var/lib/php/sessions
+    links:
+      - postgres
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - ./:/var/www/chp
+      - /etc/localtime:/etc/localtime:ro
+      - ./docker/nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./docker/nginx/boot:/etc/my_init.d
+      - ./var/log/nginx:/var/log/nginx
+    expose:
+      - 80
+    links:
+      - php
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "127.0.0.1:1080:1080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
