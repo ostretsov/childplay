@@ -3,7 +3,7 @@
 .PHONY: start-feature-branch sfb finish-feature-branch ffb git-commit-push gcp
 .PHONY: dbreset dbsync dbdump
 .PHONY: test _prepare-for-tests
-.PHONY: fix-code-style
+.PHONY: fix-code-style psalm
 
 help:									## Show this help
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/' | sort
@@ -85,13 +85,14 @@ git-commit-push:                        ## Commit changes and push. Especially u
 	        echo "M(essage) must be specified!"; \
         	exit 1; \
 	fi
-#	make fix-code-style
-#	make sh-cmd CMD="cd /var/www/chp && ./vendor/bin/psalm --show-info=false"
+	make fix-code-style
+	make psalm
 	@$(eval CURRENT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD))
-	@$(eval ISSUE=$(shell git rev-parse --abbrev-ref HEAD | cut -d'-' -f2))
-	@$(eval MESSAGE=`echo CHP-$(ISSUE) $(M)`)
+#	@$(eval ISSUE=$(shell git rev-parse --abbrev-ref HEAD | cut -d'-' -f2))
+#	@$(eval MESSAGE=`echo CHP-$(ISSUE) $(M)`)
 	git add .
-	git commit -m "$(MESSAGE)"
+#	git commit -m "$(MESSAGE)"
+	git commit -m "$(M)"
 	git push origin $(CURRENT_BRANCH)
 
 sh:                                     ## Get into PHP container shell.
@@ -152,3 +153,6 @@ db-dump:								## Dump the database.
 
 fix-code-style:							## Fix code style with php-cs-fixer.
 	make sh-cmd CMD="cd /var/www/chp && vendor/bin/php-cs-fixer fix --config ./.php_cs"
+
+psalm:
+	make sh-cmd CMD="cd /var/www/chp && ./vendor/bin/psalm --show-info=false"
