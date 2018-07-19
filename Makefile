@@ -86,7 +86,7 @@ git-commit-push:                        ## Commit changes and push. Especially u
         	exit 1; \
 	fi
 	make fix-code-style
-	make psalm
+#	make psalm
 	@$(eval CURRENT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD))
 #	@$(eval ISSUE=$(shell git rev-parse --abbrev-ref HEAD | cut -d'-' -f2))
 #	@$(eval MESSAGE=`echo CHP-$(ISSUE) $(M)`)

@@ -7,34 +7,27 @@
 namespace App\Tests;
 
 use App\Child;
-use App\User;
+use App\Tests\Fixtures\JohnDoeUserStub;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-    /**
-     * @var User
-     */
-    private $user;
-
-    protected function setUp()
-    {
-        $this->user = new User('John', 'password', [new Child('Mary', new \DateTimeImmutable('2011-12-02'))]);
-    }
-
     public function testCreateJohn()
     {
-        $this->assertSame('John', $this->user->getName());
-        $this->assertSame('password', $this->user->getEncryptedPassword());
-        $this->assertCount(1, $this->user->getChildren());
+        $user = new JohnDoeUserStub();
+
+        $this->assertSame('John Doe', $user->getName());
+        $this->assertSame('qwerty', $user->getEncryptedPassword());
+        $this->assertCount(2, $user->getChildren());
     }
 
-    public function testAddChild()
+    public function testAddChildAndGetChildren()
     {
+        $user = new JohnDoeUserStub();
         $olivia = new Child('Olivia', new \DateTimeImmutable('2013-04-20'));
 
-        $this->user->addChild($olivia);
+        $user->addChild($olivia);
 
-        $this->assertCount(2, $this->user->getChildren());
+        $this->assertCount(3, $user->getChildren());
     }
 }

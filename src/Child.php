@@ -6,7 +6,7 @@
 
 namespace App;
 
-class Child implements SetItem
+class Child
 {
     /**
      * @var string
@@ -31,10 +31,5 @@ class Child implements SetItem
     public function getBirthday(): \DateTimeImmutable
     {
         return $this->birthday;
-    }
-
-    public function getKey(): string
-    {
-        return $this->name;
     }
 }
