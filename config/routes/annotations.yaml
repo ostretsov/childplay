@@ -1,3 +1,4 @@
-#controllers:
-#    resource: ../../src/Controller/
-#    type: annotation
+controllers:
+    resource: ../../src/Symfony/Controller/
+    prefix: '/v1'
+    type: annotation
